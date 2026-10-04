@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffb6c1; 
+            font-family: 'Pixelify Sans', sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* --- Envelope Screen --- */
+        #envelope-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .envelope-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 250px;
+            height: 180px;
+        }
+
+        #envelope-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+        }
+
+        #wax-seal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            cursor: pointer;
+            animation: pulseSeal 1.5s infinite;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+
+        #wax-seal:hover {
+            animation: none;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        #envelope-screen p {
+            font-size: 2rem;
+            color: #d81b60;
+            margin-top: 25px;
+            font-weight: bold;
+        }
+
+        @keyframes pulseSeal {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.15); filter: drop-shadow(0 0 10px rgba(216, 27, 96, 0.8)); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* --- Written Letter Screen --- */
+        #message-screen {
+            display: none;
+            background-color: #fff9e6; 
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            max-width: 500px;
+            text-align: left;
+            flex-direction: column;
+            animation: popIn 0.5s ease-out forwards;
+            color: #333;
+        }
+
+        #message-screen p {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .continue-btn-container {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        #next-btn {
+            background-color: #d81b60;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-family: 'Pixelify Sans', sans-serif;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        #next-btn:hover {
+            background-color: #ad144b;
+        }
+
+        /* --- Question Screen --- */
+        #letter-screen {
+            display: none; 
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            flex-direction: column;
+            align-items: center;
+            animation: popIn 0.5s ease-out forwards;
+            max-width: 600px;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        h1 {
+            color: #d81b60;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        #cat-img {
+            width: 250px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        /* --- Buttons Container --- */
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px; /* This locks the YES and NO buttons exactly 20px apart initially */
+            margin-top: 20px;
+            position: relative;
+        }
+
+        button.action-btn {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            font-family: 'Pixelify Sans', sans-serif;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #yes-btn {
+            background-color: #4caf50;
+            color: white;
+            z-index: 2;
+            transition: transform 0.25s ease-out;
+        }
+
+        #no-btn {
+            background-color: #f44336;
+            color: white;
+            z-index: 100;
+            position: relative;
+            /* Smoothly glides to its new position within the boundary */
+            transition: transform 0.25s ease-out; 
+        }
+
+        /* --- Final Message --- */
+        #final-text {
+            display: none;
+            font-size: 1.5rem;
+            color: #333;
+            margin-top: 20px;
+            background-color: #fce4ec;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px dashed #d81b60;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="envelope-screen">
+        <div class="envelope-wrapper">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2709.svg" alt="Envelope" id="envelope-img">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2764.svg" alt="Heart Seal" id="wax-seal">
+        </div>
+        <p>A letter for Miss Kaanchi Gupta ❤️</p>
+    </div>
+
+    <div id="message-screen">
+        <p>Dear Kaanchi Ma'am,</p>
+        <p>In just a few days, you've made this little GYS journey surprisingly memorable. I genuinely loved the creativity behind the task you gave me, but what I appreciated even more was the warmth with which you responded to someone you had barely known.</p>
+        <p>I know you don't choose just anyone, and I wouldn't want you to. So, with a little courage and no expectation, I wanna ask you ............</p>
+        <div class="continue-btn-container">
+            <button id="next-btn">Continue...</button>
+        </div>
+    </div>
+
+    <div id="letter-screen">
+        <h1 id="question">Would You Let Me Be Your GYS Partner ❤️</h1>
+        <img id="cat-img" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb214M29qZ3QxbDQwN3pwZzB5ODQxZnQwaTh6a29sZ3JqZ3Q1eDV0ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oriO0OEd9QIDdllqo/giphy.gif" alt="Pleading Cat">
+        
+        <div class="buttons" id="button-container">
+            <button id="yes-btn" class="action-btn">Yes</button>
+            <button id="no-btn" class="action-btn">No</button>
+        </div>
+
+        <div id="final-text">Awesome! Let's make this GYS journey amazing together. 🥰</div>
+    </div>
+
+    <script>
+        const waxSeal = document.getElementById('wax-seal');
+        const envelopeScreen = document.getElementById('envelope-screen');
+        const messageScreen = document.getElementById('message-screen');
+        const nextBtn = document.getElementById('next-btn');
+        const letterScreen = document.getElementById('letter-screen');
+        
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const question = document.getElementById('question');
+        const catImg = document.getElementById('cat-img');
+        const buttonContainer = document.getElementById('button-container');
+        const finalText = document.getElementById('final-text');
+
+        let yesScale = 1;
+
+        waxSeal.addEventListener('click', () => {
+            envelopeScreen.style.display = 'none';
+            messageScreen.style.display = 'flex';
+        });
+
+        nextBtn.addEventListener('click', () => {
+            messageScreen.style.display = 'none';
+            letterScreen.style.display = 'flex';
+            // Removed the buggy position logic. Flexbox handles the alignment automatically now.
+        });
+
+        noBtn.addEventListener('mouseover', () => {
+            // The Invisible Boundary limit (150px in any direction from its starting point)
+            const boundaryRange = 150; 
+            
+            // Generates a random coordinate between -150 and +150
+            let randomX = (Math.random() * boundaryRange * 2) - boundaryRange;
+            let randomY = (Math.random() * boundaryRange * 2) - boundaryRange;
+
+            // Ensures the button always jumps far enough away from the cursor so it can't be clicked
+            if (Math.abs(randomX) < 50) randomX = randomX > 0 ? 50 : -50;
+            if (Math.abs(randomY) < 50) randomY = randomY > 0 ? 50 : -50;
+
+            // Applies the movement relative to its original perfectly-aligned starting spot
+            noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+
+            // Escalate the YES button
+            yesScale += 0.2;
+            yesBtn.style.transform = `scale(${yesScale})`;
+        });
+
+        yesBtn.addEventListener('click', () => {
+            question.innerText = 'Yippie!! 💖';
+            catImg.src = 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTN1aXFxaHByMW1tZ2F0dnlzb3R3d3Q3OGQ1azM1eWZ0aHh6Z3F5MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDJ9IbxxvDUQM/giphy.gif';
+            buttonContainer.style.display = 'none';
+            finalText.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
