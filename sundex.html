@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Delivery</title> 
+    <meta property="og:title" content="A letter for Kaanchi">
+    <meta property="og:description" content="Tap to open the album...">
+    <meta name="description" content="Tap to open the album...">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Updated to soft, beautiful pinks */
+            --paper: #ffe4e8; 
+            --ink: #3a2228;
+            --accent: #d81b60;
+            --terminal-bg: #0a0a0a;
+            --terminal-text: #4af626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffc0cb, #ffe4e8, #ffb6c1);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        /* --- Magical Background Elements --- */
+        .scenery {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .moon {
+            position: absolute;
+            top: 10%;
+            right: 15%;
+            font-size: 5rem;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.8));
+        }
+
+        .star {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.6;
+            animation: twinkle 3s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 0.8; transform: scale(1.2); }
+        }
+
+        /* --- Page Architecture --- */
+        .page {
+            display: none;
+            min-height: 100vh;
+            width: 100vw;
+            padding: 20px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            max-width: 600px;
+        }
+
+        .handwritten {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            color: var(--accent);
+            font-size: 1.4rem;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: var(--ink);
+            color: var(--paper);
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* --- Page 1: Characters (Polaroids) --- */
+        .polaroid-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .polaroid {
+            background: white;
+            padding: 15px 15px 40px 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            width: 260px;
+            text-align: left;
+            transform: rotate(-2deg);
+            border-radius: 4px;
+        }
+
+        .polaroid:nth-child(2) {
+            transform: rotate(3deg);
+        }
+
+        .polaroid-img {
+            width: 100%;
+            height: 180px;
+            background-color: var(--ink);
+            color: var(--paper);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            position: relative;
+        }
+
+        /* The Crown for K */
+        .crown {
+            position: absolute;
+            top: 20px;
+            right: 80px;
+            font-size: 2.5rem;
+            transform: rotate(15deg);
+            font-style: normal;
+        }
+
+        .polaroid h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--ink);
+        }
+
+        .polaroid p {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        /* --- Page 2: Outfit Dilemma --- */
+        .outfit-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+        
+        .outfit-options button {
+            margin-top: 0;
+            background-color: white;
+            color: var(--ink);
+            border: 2px solid var(--ink);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .outfit-options button:hover {
+            background-color: var(--ink);
+            color: var(--paper);
+        }
+
+        /* Smooth dodging for options A and C */
+        .evasive {
+            transition: transform 0.25s ease-out;
+        }
+
+        #outfit-conclusion {
+            display: none;
+            animation: fadeIn 1s ease-in;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        /* --- Page 4: Terminal --- */
+        #page-4 {
+            background-color: var(--terminal-bg);
+            color: var(--terminal-text);
+            font-family: 'Courier Prime', monospace;
+            text-align: left;
+            justify-content: flex-start;
+            padding-top: 10vh;
+        }
+
+        #page-4 p, #page-4 h1 {
+            font-family: 'Courier Prime', monospace;
+            margin-bottom: 10px;
+        }
+
+        .typewriter {
+            overflow: hidden;
+            white-space: pre-wrap;
+            margin: 0 auto;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        /* --- Page 5: Empty Photo --- */
+        .empty-frame {
+            border: 2px dashed var(--ink);
+            width: 280px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--ink);
+            margin: 30px 0;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            gap: 25px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* --- Page 6: The Ask --- */
+        #page-6 {
+            background-color: var(--ink);
+            color: var(--paper);
+        }
+
+        .ask-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-yes {
+            background-color: var(--paper);
+            color: var(--ink);
+            box-shadow: 0 0 20px rgba(255, 182, 193, 0.4);
+        }
+
+        .btn-yes:hover {
+            background-color: #fff;
+            transform: scale(1.05);
+        }
+
+        .btn-no {
+            background-color: transparent;
+            border: 1px solid var(--paper);
+        }
+
+        /* --- Falling Roses Animation --- */
+        .rose-drop {
+            position: fixed;
+            top: -10vh;
+            font-size: 2rem;
+            z-index: 1000;
+            animation: fall linear forwards;
+            pointer-events: none;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+        }
+
+        @keyframes fall {
+            to { transform: translateY(115vh) rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Scenery -->
+    <div class="scenery">
+        <div class="moon">🌙</div>
+        <div class="star" style="top: 20%; left: 10%;">✨</div>
+        <div class="star" style="top: 70%; left: 80%;">✨</div>
+        <div class="star" style="top: 40%; left: 85%; animation-delay: 1s;">✨</div>
+        <div class="star" style="top: 80%; left: 20%; animation-delay: 2s;">✨</div>
+    </div>
+
+    <!-- PAGE 0: Cover -->
+    <div id="page-0" class="page active">
+        <h1>A COLLEGE MEMORY</h1>
+        <p><strong>2026</strong></p>
+        <p><em>One day. One story. Maybe.</em></p>
+        <p class="handwritten">For Kaanchi Ma'am</p>
+        <button onclick="goToPage(1)">OPEN THE ALBUM →</button>
+    </div>
+
+    <!-- PAGE 1: Characters -->
+    <div id="page-1" class="page">
+        <h2>The Cast</h2>
+        <div class="polaroid-container">
+            <div class="polaroid">
+                <div class="polaroid-img">A.</div>
+                <h3>THE JUNIOR</h3>
+                <p>• Second-year</p>
+                <p>• GYS: First attempt</p>
+                <p>• Dancing skills: Questionable</p>
+                <p>• Confidence: Currently loading...</p>
+            </div>
+            <div class="polaroid">
+                <div class="polaroid-img">
+                    K.
+                    <div class="crown">👑</div>
+                </div>
+                <h3>THE SENIOR</h3>
+                <p>• Final verdict on GYS:</p>
+                <p><strong>"I'll let you know."</strong></p>
+                <p>• Status: Undecided</p>
+            </div>
+        </div>
+        <button onclick="goToPage(2)">Next Page</button>
+    </div>
+
+    <!-- PAGE 2: Outfit Dilemma -->
+    <div id="page-2" class="page">
+        <h2>THE OUTFIT DILEMMA</h2>
+        <p><em>A serious investigation.</em></p>
+        
+        <div id="outfit-choices" class="outfit-options">
+            <button class="evasive" id="outfit-a">A — The Perfect Outfit</button>
+            <button onclick="solveOutfit()">B — "I Have Nothing To Wear"</button>
+            <button class="evasive" id="outfit-c">C — Just Show Up</button>
+        </div>
+
+        <div id="outfit-conclusion">
+            <p><strong>Outfit detected.</strong></p>
+            <p>Looking good: ✓<br>Comfortable: ✓<br>Will anyone remember the exact fabric in 10 years?</p>
+            <p><strong>Probably not.</strong></p>
+            <br>
+            <p>📸 The pictures. 😂 The stupid moments. ✨ The person beside you.</p>
+            <p class="handwritten">Maybe the outfit was never the important part.</p>
+            <button onclick="goToPage(3)">Continue</button>
+        </div>
+    </div>
+
+    <!-- PAGE 3: Firsts -->
+    <div id="page-3" class="page">
+        <h2>FIRST FRESHERS</h2>
+        <p>First time doing GYS.</p>
+        <br>
+        <p>And... probably the last time I'll experience Freshers as a junior.</p>
+        <p class="handwritten">1 day → 1 opportunity → 1 memory</p>
+        <p>So I thought...</p>
+        <h2>Why experience it alone?</h2>
+        <button onclick="goToPage(4)">Next</button>
+    </div>
+
+    <!-- PAGE 4: Terminal -->
+    <div id="page-4" class="page">
+        <div class="typewriter" id="terminal-text"></div>
+        <button id="terminal-btn" style="display:none; border: 1px solid var(--terminal-text); background: transparent; color: var(--terminal-text);" onclick="goToPage(5)">Return to System</button>
+    </div>
+
+    <!-- PAGE 5: Empty Photo -->
+    <div id="page-5" class="page">
+        <div class="empty-frame">
+            <span>A.</span> <span>?</span>
+        </div>
+        <h2>One picture is still missing.</h2>
+        <p>Some stories are planned. Others happen because two people simply decide to show up.</p>
+        <p class="handwritten">Maybe this page doesn't have to stay empty.</p>
+        <button onclick="goToPage(6)">Turn to the last page</button>
+    </div>
+
+    <!-- PAGE 6: The Ask -->
+    <div id="page-6" class="page">
+        <h1 style="color: var(--paper)">Dear Kaanchi Ma'am,</h1>
+        <p style="color: #ccc">I genuinely wanted to experience GYS with you.</p>
+        <p style="color: #ccc">Not because it has to be perfect. Not because you need the perfect outfit.</p>
+        <p style="color: #ccc">Just because I think it could become <strong>one really good college memory.</strong></p>
+        <h2 style="margin-top: 30px; color: var(--paper)">Want to write this page with me?</h2>
+        
+        <div class="ask-buttons">
+            <button class="btn-yes" onclick="goToPage(8)">❤️ YES — LET'S MAKE THE MEMORY</button>
+            <button class="btn-no" onclick="goToPage(7)">🙂 NO — LEAVE IT UNWRITTEN</button>
+        </div>
+    </div>
+
+    <!-- PAGE 7: The Graceful No -->
+    <div id="page-7" class="page">
+        <h2>Page left unwritten.</h2>
+        <p>Fair enough, ma'am. ❤️</p>
+        <p>Some stories aren't meant to happen.</p>
+        <p class="handwritten">Thanks for reading mine.</p>
+    </div>
+
+    <!-- PAGE 8: The Yes Victory with Roses -->
+    <div id="page-8" class="page">
+        <h2>Memory loading...</h2>
+        <p>Awesome. Let's make this GYS journey unforgettable. 🥰</p>
+        <p class="handwritten">Thanks for making my first freshers special.</p>
+    </div>
+
+    <script>
+        function goToPage(pageNum) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.getElementById('page-' + pageNum).classList.add('active');
+
+            if(pageNum === 4) {
+                runTerminal();
+            }
+            if(pageNum === 8) {
+                showerRoses();
+            }
+        }
+
+        // --- Outfit Dilemma Logic ---
+        document.querySelectorAll('.evasive').forEach(btn => {
+            btn.addEventListener('mouseover', () => {
+                // Makes the button playfully dodge within a small radius
+                const x = (Math.random() - 0.5) * 150;
+                const y = (Math.random() - 0.5) * 100;
+                btn.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+
+        function solveOutfit() {
+            document.getElementById('outfit-choices').style.display = 'none';
+            document.getElementById('outfit-conclusion').style.display = 'block';
+        }
+
+        // --- Hacker Terminal Logic ---
+        function runTerminal() {
+            const termText = `GYS_2026.exe\n\nInitializing...\n\nOutfit requirement ........ OPTIONAL ✓\nDancing ability ........... OPTIONAL ✓\nAwkwardness ............... GUARANTEED ✓\nGood memories ............. POSSIBLE ✓\n\nPartner status ............ UNDECIDED\n\nSearching for final variable...\n\nPARTNER = ?\n\nWARNING:\nThis variable cannot be determined by the system.\n\nSome decisions are better left to humans.`;
+            
+            const termElement = document.getElementById('terminal-text');
+            const termBtn = document.getElementById('terminal-btn');
+            termElement.innerHTML = '';
+            termBtn.style.display = 'none';
+            
+            let i = 0;
+            function typeWriter() {
+                if (i < termText.length) {
+                    termElement.innerHTML += termText.charAt(i) === '\n' ? '<br>' : termText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 35); 
+                } else {
+                    setTimeout(() => { termBtn.style.display = 'block'; }, 500);
+                }
+            }
+            setTimeout(typeWriter, 500);
+        }
+
+        // --- Rose Shower Logic ---
+        function showerRoses() {
+            const symbols = ['🌹', '🌸', '✨', '💖'];
+            setInterval(() => {
+                const rose = document.createElement('div');
+                rose.innerText = symbols[Math.floor(Math.random() * symbols.length)];
+                rose.classList.add('rose-drop');
+                rose.style.left = Math.random() * 100 + 'vw';
+                // Randomize fall speed and size slightly
+                rose.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                rose.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem';
+                document.body.appendChild(rose);
+                
+                // Cleanup to prevent browser lag
+                setTimeout(() => { rose.remove() }, 5000);
+            }, 150);
+        }
+    </script>
+</body>
+</html>
