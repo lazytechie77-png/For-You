@@ -87,9 +87,9 @@
         }
 
         #message-screen p {
-            font-size: 1.3rem;
-            line-height: 1.6;
-            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 12px;
         }
 
         .continue-btn-container {
@@ -217,14 +217,15 @@
             <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2709.svg" alt="Envelope" id="envelope-img">
             <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2764.svg" alt="Heart Seal" id="wax-seal">
         </div>
-        <p>A letter for Miss Harshita Patil ❤️</p>
+        <p>A letter for Miss Bhumi Banwasi ❤️</p>
     </div>
 
     <div id="message-screen">
-        <p>Dear Harshita Ma'am,</p>
-        <p>I still remember our little interaction on Day 2 (selfie with senior), when you gave me the singing task. It was a simple task, but I genuinely enjoyed that little interaction 😄</p>
-        <p>And now that GYS is finally here, I thought I'd ask you properly rather than just casually drop the question.</p>
-        <p>So, with a little courage, I wanted to ask you...</p>
+        <p>Dear Bhumi Ma'am,</p>
+        <p>I owe you a proper introduction — and perhaps an apology for not approaching you earlier during the 3rd Freshers meet. 😅</p>
+        <p>I still remember the little task you gave me — to perform my favourite Bollywood dialogue. It was simple, but it was one of those small interactions that made the whole GYS experience more fun.</p>
+        <p>From the little I've seen, you seem like someone who carries herself with a really warm and cheerful energy, and I'd genuinely be glad to have you as my senior partner for this experience.</p>
+        <p>So, with a little courage, I'm finally asking properly...</p>
         <div class="continue-btn-container">
             <button id="next-btn">Continue...</button>
         </div>
@@ -291,7 +292,6 @@
             showerRoses();
         });
 
-        // --- Rose Shower Logic ---
         function showerRoses() {
             const symbols = ['🌹', '🌸', '✨', '💖'];
             setInterval(() => {
@@ -299,12 +299,10 @@
                 rose.innerText = symbols[Math.floor(Math.random() * symbols.length)];
                 rose.classList.add('rose-drop');
                 rose.style.left = Math.random() * 100 + 'vw';
-                // Randomize fall speed and size slightly
                 rose.style.animationDuration = (Math.random() * 3 + 2) + 's';
                 rose.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem';
                 document.body.appendChild(rose);
                 
-                // Cleanup to prevent browser lag
                 setTimeout(() => { rose.remove() }, 5000);
             }, 150);
         }
